@@ -1,39 +1,28 @@
-const express = require("express")
-const app = express()
-require("dotenv").config()
-const mysql = require("mysql")
+const express = require("express");
+const dotenv = require("dotenv");
+const { getConnection } = require("./config/db");
+const authRoutes = require("./routes/authRoutes");
+const taskRoutes = require("./routes/taskRoutes");
+const { authenticateJWT } = require("./middlewares/authMiddleware");
 
-const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DATABASE_NAME,
-})
+dotenv.config();
 
-db.connect(err => {
-    if(err){
-        console.log(err.message)
-        return
+const app = express();
+app.use(express.json());
+
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/tasks", authenticateJWT, taskRoutes);
+
+const startServer = async () => {
+    try {
+        await getConnection();
+        console.log("Database connection established");
+        const PORT = process.env.PORT || 5000;
+        app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    } catch (error) {
+        console.error("Failed to start server:", error.message);
+        process.exit(1);
     }
-    console.log("Database connected")
-})
+};
 
-app.get("/api/get", (req, res) => {
-    res.send({message: "Hello, listening"})
-})
-
-app.get("/api/get_user", (req, res) => {
-    res.send({
-        user:{
-            name: "Shahzaib",
-            age: 29,
-            contact: 123456789
-        },
-        env:process.env.NAME
-    })
-})
-
-app.listen(process.env.PORT, () => {
-    console.log("listening on 8000")
-})
+startServer();
