@@ -17,8 +17,10 @@ type PrivateRouteProps = {
 // PrivateRoute Component
 
 const App = () => {
-  const [darkMode, setDarkMode] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(true) // Manage login state
+  // const [darkMode, setDarkMode] = useState(false)
+  // const [isLoggedIn, setIsLoggedIn] = useState(true)
+  const isLoggedIn = true
+  const darkMode = false
 
   const PrivateRoute = ({ children }: PrivateRouteProps) => {
     return isLoggedIn ? <>{children}</> : <Navigate to='/login' />
