@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const { getConnection } = require("../config/db");
 
 exports.register = async (req, res) => {
+    console.log('call log')
     const { username, password } = req.body;
 
     if (!username || !password) {
