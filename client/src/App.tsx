@@ -33,7 +33,8 @@ const PrivateRoute = ({ children }: PrivateRouteProps) => {
 }
 
 const App = () => {
-  const [darkMode, setDarkMode] = useState(false)
+  // const [darkMode, setDarkMode] = useState(false)
+  const darkMode = false
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)
 
   useEffect(() => {
