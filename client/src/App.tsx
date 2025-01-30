@@ -1,4 +1,4 @@
-// import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   BrowserRouter as Router,
   Routes,
@@ -7,23 +7,56 @@ import {
 } from 'react-router-dom'
 import Login from './components/Login'
 import Signup from './components/Signup'
-import HomePage from './components/Homepage'
+import HomePage from './components/HomePage'
 
-// Type for PrivateRoute props
 type PrivateRouteProps = {
   children: React.ReactNode
 }
 
-// PrivateRoute Component
+const PrivateRoute = ({ children }: PrivateRouteProps) => {
+  const token = localStorage.getItem('authToken')
+  const tokenExpirationTime = localStorage.getItem('tokenExpirationTime')
+  const currentTime = new Date().getTime() / 1000 // Current time in seconds
+
+  // Check if token exists and if it's expired
+  if (
+    token &&
+    tokenExpirationTime &&
+    currentTime < parseInt(tokenExpirationTime)
+  ) {
+    return <>{children}</>
+  } else {
+    localStorage.removeItem('authToken') // Remove expired token
+    localStorage.removeItem('tokenExpirationTime') // Remove expiration time
+    return <Navigate to='/login' />
+  }
+}
 
 const App = () => {
-  // const [darkMode, setDarkMode] = useState(false)
-  // const [isLoggedIn, setIsLoggedIn] = useState(true)
-  const isLoggedIn = true
-  const darkMode = false
+  const [darkMode, setDarkMode] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)
 
-  const PrivateRoute = ({ children }: PrivateRouteProps) => {
-    return isLoggedIn ? <>{children}</> : <Navigate to='/login' />
+  useEffect(() => {
+    const token = localStorage.getItem('authToken')
+    const tokenExpirationTime = localStorage.getItem('tokenExpirationTime')
+    const currentTime = new Date().getTime() / 1000 // Current time in seconds
+
+    // Check if token exists and if it's expired
+    if (
+      token &&
+      tokenExpirationTime &&
+      currentTime < parseInt(tokenExpirationTime)
+    ) {
+      setIsLoggedIn(true)
+    } else {
+      setIsLoggedIn(false)
+      localStorage.removeItem('authToken') // Remove expired token
+      localStorage.removeItem('tokenExpirationTime') // Remove expiration time
+    }
+  }, [])
+
+  if (isLoggedIn === null) {
+    return <div>Loading...</div> // Show loader until token check is done
   }
 
   return (
@@ -33,10 +66,13 @@ const App = () => {
       >
         <Routes>
           {/* Public Routes */}
-          <Route path='/login' element={isLoggedIn ? <Login /> : <Login />} />
+          <Route
+            path='/login'
+            element={isLoggedIn ? <Navigate to='/' /> : <Login />}
+          />
           <Route
             path='/signup'
-            element={isLoggedIn ? <Signup /> : <Signup />}
+            element={isLoggedIn ? <Navigate to='/' /> : <Signup />}
           />
 
           {/* Private Routes */}
@@ -44,7 +80,7 @@ const App = () => {
             path='/'
             element={
               <PrivateRoute>
-                <HomePage isLoggedIn={isLoggedIn} />
+                <HomePage />
               </PrivateRoute>
             }
           />
@@ -52,7 +88,7 @@ const App = () => {
             path='/dashboard'
             element={
               <PrivateRoute>
-                <HomePage isLoggedIn={isLoggedIn} />
+                <HomePage />
               </PrivateRoute>
             }
           />
