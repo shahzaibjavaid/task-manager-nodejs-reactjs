@@ -1,6 +1,23 @@
 const express = require("express")
 const app = express()
 require("dotenv").config()
+const mysql = require("mysql")
+
+const db = mysql.createConnection({
+    host: "database-1.cbw2e6w84kse.ap-south-1.rds.amazonaws.com",
+    port: "3306",
+    user: "admin",
+    password: "AWSNODESQL123",
+    database: "my_db"
+})
+
+db.connect(err => {
+    if(err){
+        console.log(err.message)
+        return
+    }
+    console.log("Database connected")
+})
 
 app.get("/api/get", (req, res) => {
     res.send({message: "Hello, listening"})
