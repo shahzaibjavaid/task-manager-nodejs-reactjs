@@ -3,9 +3,7 @@ const jwt = require("jsonwebtoken");
 const { getConnection } = require("../config/db");
 
 exports.register = async (req, res) => {
-    console.log('call log register')
     const { username, password } = req.body;
-
     if (!username || !password) {
         return res.status(400).json({ error: "Username and password are required" });
     }
@@ -34,9 +32,7 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-    console.log('call log login')
     const { username, password } = req.body;
-
     if (!username || !password) {
         return res.status(400).json({ error: "Username and password are required" });
     }
