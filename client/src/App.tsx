@@ -9,17 +9,19 @@ import Login from './components/Login'
 import Signup from './components/Signup'
 import HomePage from './components/Homepage'
 
+// Type for PrivateRoute props
+type PrivateRouteProps = {
+  children: React.ReactNode
+}
+
+// PrivateRoute Component
+
 const App = () => {
   const [darkMode, setDarkMode] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(true) // Manage login state
 
-  const toggleTheme = () => setDarkMode(!darkMode)
-  const handleLogin = () => setIsLoggedIn(true)
-  const handleLogout = () => setIsLoggedIn(false)
-
-  // Private Route Wrapper
-  const PrivateRoute = ({ children }) => {
-    return isLoggedIn ? children : <Navigate to='/login' />
+  const PrivateRoute = ({ children }: PrivateRouteProps) => {
+    return isLoggedIn ? <>{children}</> : <Navigate to='/login' />
   }
 
   return (
@@ -29,7 +31,6 @@ const App = () => {
       >
         <Routes>
           {/* Public Routes */}
-          {/* <Navigate to='/' /> */}
           <Route path='/login' element={isLoggedIn ? <Login /> : <Login />} />
           <Route
             path='/signup'

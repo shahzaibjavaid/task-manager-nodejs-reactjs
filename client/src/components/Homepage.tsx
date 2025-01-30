@@ -1,6 +1,11 @@
 import TopBar from './Topbar'
 import Sidebar from './Sidebar'
-const HomePage = () => {
+
+type HomePageProps = {
+  isLoggedIn: boolean
+}
+
+const HomePage = ({ isLoggedIn }: HomePageProps) => {
   return (
     <div className='flex h-screen bg-neutral-900'>
       <Sidebar />
@@ -14,6 +19,7 @@ const HomePage = () => {
               <h2 className='text-gray-100 text-xl font-semibold'>All Tasks</h2>
               <div className='w-10 h-0.5 bg-neutral-900 dark:bg-[#aaca1c] mt-1'></div>
             </div>
+            <div>{isLoggedIn ? 'Welcome!' : 'Please log in'}</div>
             <button className='text-white ml-auto'>Add</button>
           </div>
 
